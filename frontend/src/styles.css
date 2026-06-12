@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+@layer base {
+  h1,
+  h2,
+  h3 {
+    font-family: theme("fontFamily.display");
+    letter-spacing: -0.025em;
+  }
+
+  ::selection {
+    background: rgba(52, 211, 153, 0.35);
+  }
+
+  :focus-visible {
+    outline: 2px solid rgba(16, 185, 129, 0.85);
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  .eyebrow {
+    @apply font-bold uppercase text-emerald-800/90;
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+  }
+}

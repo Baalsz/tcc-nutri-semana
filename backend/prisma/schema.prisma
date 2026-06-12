@@ -1,0 +1,143 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+model User {
+  id              String    @id @default(cuid())
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  name            String
+  email           String    @unique
+  username        String?   @unique
+  passwordHash    String
+
+  consentLgpd     Boolean   @default(false)
+  role            UserRole  @default(USER)
+
+  sex             String?   // "male" | "female" | "other"
+  age             Int
+  weightKg        Float
+  heightCm        Float
+
+  goal            String    // "lose" | "maintain" | "gain"
+  /** Nível de atividade para estimar TDEE (Mifflin × fator) */
+  activityLevel   String    @default("moderate")
+  /** Peso-alvo opcional (kg), para acompanhamento no perfil */
+  targetWeightKg  Float?
+  /** Ritmo desejado em kg/semana (magnitude; sentido vem de goal: lose/gain). Em "maintain" ignora-se. */
+  weeklyWeightKg  Float?
+  /** Metas ou observações livres (curtas) */
+  goalNotes       String    @default("")
+
+  restrictions    String    // texto/CSV (ex: "lactose,gluten")
+  preferences     String    // texto/CSV (ex: "frango,arroz")
+  budgetPerWeek   Float
+  prepTimeMinutes Int
+
+  dietPlans       DietPlan[]
+  mealCompletions MealCompletion[]
+}
+
+model Food {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+
+  name          String
+  category      String   // "protein" | "carb" | "fat" | "veg" | "fruit" | "dairy" | ...
+
+  caloriesKcal  Float
+  proteinG      Float
+  carbsG        Float
+  fatG          Float
+
+  costPer100g   Float
+  unit          String   // "g" | "un" | "ml"
+  defaultQty    Float    // qty em unit (ex: 120g)
+
+  tags          String   // texto/CSV (ex: "vegetarian,lactose_free")
+}
+
+model Meal {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+
+  name          String   // "Café da manhã", "Almoço", ...
+  dayIndex      Int      // 0..6
+  mealType      String   // "breakfast"|"lunch"|"dinner"|"snack"
+
+  caloriesKcal  Float
+  proteinG      Float
+  carbsG        Float
+  fatG          Float
+
+  explanation   String
+
+  dietMeals     DietMeal[]
+}
+
+model DietPlan {
+  id              String     @id @default(cuid())
+  createdAt       DateTime   @default(now())
+
+  userId          String
+  user            User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  weekStart       DateTime
+  targetCalories  Float
+  targetProteinG  Float
+  targetCarbsG    Float
+  targetFatG      Float
+  estWeeklyCost   Float
+
+  dietMeals       DietMeal[]
+  shoppingList    ShoppingList?
+}
+
+model DietMeal {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+
+  dietPlanId  String
+  dietPlan    DietPlan @relation(fields: [dietPlanId], references: [id], onDelete: Cascade)
+
+  mealId      String
+  meal        Meal     @relation(fields: [mealId], references: [id], onDelete: Cascade)
+
+  itemsJson   String   // ingredientes e quantidades (JSON string)
+
+  completions MealCompletion[]
+}
+
+model MealCompletion {
+  id         String   @id @default(cuid())
+  createdAt  DateTime @default(now())
+
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  dietMealId String   @unique
+  dietMeal   DietMeal @relation(fields: [dietMealId], references: [id], onDelete: Cascade)
+}
+
+model ShoppingList {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+
+  dietPlanId  String   @unique
+  dietPlan    DietPlan @relation(fields: [dietPlanId], references: [id], onDelete: Cascade)
+
+  itemsJson   String   // itens agrupados (JSON string)
+  estCost     Float
+}
+
