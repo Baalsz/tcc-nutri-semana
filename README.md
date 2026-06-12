@@ -148,14 +148,6 @@ tcce/
 
 ---
 
-## Documentação complementar (TCC)
-
-- [METODOLOGIA.md](./METODOLOGIA.md) — abordagem, stack, testes e limitações  
-- [DIAGRAMAS.md](./DIAGRAMAS.md) — casos de uso e modelo entidade-relacionamento  
-- [FORMULARIO_AVALIACAO_TCC.md](./FORMULARIO_AVALIACAO_TCC.md) — pesquisa com usuários  
-
----
-
 ## Scripts disponíveis
 
 | Comando | Descrição |
@@ -172,8 +164,8 @@ tcce/
 
 Se utilizar este código em trabalhos acadêmicos, cite o autor e o contexto de TCC.
 
-**Matheus Henrique** — Sistemas de Informação (TCC)
+**Andre Henrique e Matheus Henrique** — Sistemas de Informação (TCC)
 
 ---
 
-*Projeto acadêmico. Desenvolvido para fins de aprendizado, avaliação e demonstração de arquitetura de software aplicada à área de saúde/nutrição.*
+*Projeto acadêmico. Desenvolvido para fins de aprendizado, avaliação e demonstração de arquitetura de software aplicada à área de saúde/nutrição.*    
